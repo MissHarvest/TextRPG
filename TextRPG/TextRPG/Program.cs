@@ -8,23 +8,23 @@ namespace TextRPG
 
         static void Main(string[] args)
         {
-            // GameManager
-            
+            GameManager gameManager = new GameManager();
             GameScene scene = new GameScene();
+
+            gameManager.Scene = scene;
+
             KeyInputHandler keyInputHandle = scene.GetInput;
+            keyInputHandle += gameManager.GetInput;
 
             scene.DrawScene();
-
-            while (true)
+            // gameManager.ChangeState()
+            while (gameManager.isPlay)
             {
                 if (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(true).Key;
                     keyInputHandle(key);
                 }
-
-
-
                 Thread.Sleep(100);
             }
         }

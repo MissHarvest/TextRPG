@@ -27,14 +27,37 @@ namespace TextRPG
             Console.SetCursorPosition(52, 25);
         }
 
+        public void Draw(string msg)
+        {
+            str = msg;
+            Console.SetCursorPosition(x, y);
+            Console.Write(msg);
+            Console.SetCursorPosition(52, 25);
+        }
+
         public void Clear()
         {
-            int length = str.Length;
+            byte[] buffer = Encoding.Default.GetBytes(str);
+            int length = buffer.Length;
+
             for(int i = 0; i < length; ++i)
             {
                 Console.SetCursorPosition(x + i, y);
                 Console.Write(" ");
             }
+        }
+
+        public void Delete()
+        {
+            byte[] buffer = Encoding.Default.GetBytes(str);
+            int length = buffer.Length;
+
+            for (int i = 0; i < length; ++i)
+            {
+                Console.SetCursorPosition(x + i, y);
+                Console.Write(" ");
+            }
+            str = "";
         }
     }
 
@@ -51,7 +74,7 @@ namespace TextRPG
         List<Point> boundary;
         Point mapName;
         List<Point> choices = new List<Point>();
-
+        Point exit;
         public GameScene()
         {
             curScene = EScene.Title;
@@ -61,6 +84,12 @@ namespace TextRPG
             CreateTitle();
             CreateComment();
             mapName = new Point(1, 1, "[마을]");
+            choices.Add(new Point(5, 17, ""));
+            choices.Add(new Point(5, 18, ""));
+            choices.Add(new Point(5, 19, ""));
+            choices.Add(new Point(5, 20, ""));
+
+            exit = new Point(5, 23, "0. 뒤로가기 / 나가기");
         }
 
         void CreateFrame()
@@ -122,6 +151,14 @@ namespace TextRPG
             }
         }
 
+        void EraseBoundary()
+        {
+            for (int i = 0; i < boundary.Count; ++i)
+            {
+                boundary[i].Clear();
+            }
+        }
+
         void PrintTitle()
         {
             title.Draw();
@@ -141,7 +178,6 @@ namespace TextRPG
                 case EScene.Main:
                     mapName.Draw();
                     DrawBoundary();
-                    ShowSelectList();
                     break;
             }
         }
@@ -157,21 +193,33 @@ namespace TextRPG
 
                 case EScene.Main:
                     mapName.Clear();
+                    EraseBoundary();
+                    DrawFrame();
+                    DeleteSelectList();
                     break;
             }
             curScene = scene;
             DrawScene();
         }
 
-        public void ShowSelectList(/*string[] selectList*/)
+        public void ShowSelectList(string[] selectList)
         {
-            // 17, 5, 
-            choices.Add(new Point(5, 17, "1. 상태보기"));
-            choices.Add(new Point(5, 18, "2. 인벤토리"));
-            for(int i = 0; i < choices.Count; ++i)
+            for(int i = 0; i < selectList.Length; ++i)
             {
-                choices[i].Draw();
+                choices[i].Draw((i + 1).ToString() + ". " + selectList[i]);
             }
+
+            exit.Draw();
+        }
+
+        void DeleteSelectList()
+        {
+            for (int i = 0; i < choices.Count; ++i)
+            {
+                choices[i].Delete();
+            }
+
+            exit.Clear();
         }
 
         public void GetInput(ConsoleKey key)

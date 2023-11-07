@@ -10,14 +10,16 @@ namespace TextRPG
         {
             GameManager gameManager = new GameManager();
             GameScene scene = new GameScene();
+            Player player = new Player();
 
             gameManager.Scene = scene;
+            gameManager.Player = player;
 
             KeyInputHandler keyInputHandle = scene.GetInput;
             keyInputHandle += gameManager.GetInput;
 
             scene.DrawScene();
-            // gameManager.ChangeState()
+            
             while (gameManager.isPlay)
             {
                 if (Console.KeyAvailable)

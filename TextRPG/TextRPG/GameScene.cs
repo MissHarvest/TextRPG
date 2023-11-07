@@ -204,7 +204,9 @@ namespace TextRPG
 
         public void ShowSelectList(string[] selectList)
         {
-            for(int i = 0; i < selectList.Length; ++i)
+            DeleteSelectList();
+
+            for (int i = 0; i < selectList.Length; ++i)
             {
                 choices[i].Draw((i + 1).ToString() + ". " + selectList[i]);
             }
@@ -231,5 +233,31 @@ namespace TextRPG
                     break;
             }
         }
+
+        public void ShowStatus(Player player)
+        {
+            mapName.Delete();
+            mapName.Draw("[능력치]");
+
+            Console.SetCursorPosition(5, 3);
+            Console.Write("Lv. " + player.Lv);
+
+            Console.SetCursorPosition(5, 5);
+            Console.Write($"Chad ( {player.Class} )");
+
+            Console.SetCursorPosition(5, 7);
+            Console.Write($"공격력 : {player.Atk}");
+
+            Console.SetCursorPosition(5, 9);
+            Console.Write($"방어력 : {player.Def}");
+
+            Console.SetCursorPosition(5, 11);
+            Console.Write($"체력 : {player.Hp} / {player.MaxHp}");
+
+            Console.SetCursorPosition(5, 13);
+            Console.Write($"Gold : {player.Gold}");
+
+            exit.Draw();
+        }        
     }
 }

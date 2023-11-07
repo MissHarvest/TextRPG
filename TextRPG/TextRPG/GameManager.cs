@@ -19,14 +19,19 @@ namespace TextRPG
         
         public GameScene Scene { set { scene = value; } }
         public bool isPlay = true;
-        
+
+        Player player;
+        public Player Player { set { player = value; } }
+
         public GameManager()
         {
             choiceStringDic.Add(EState.Town, new string[] { "상태보기", "인벤토리" });
             choiceStateDic.Add(EState.Town, new EState[] {EState.Status, EState.Inventory });
 
-            choiceStringDic.Add(EState.Status, new string[] { "상태보기", "인벤토리" });
-            choiceStateDic.Add(EState.Status, new EState[] { EState.Status, EState.Inventory });
+
+            // 스테이터스는 아무것도 없네.
+            choiceStringDic.Add(EState.Status, new string[] { });
+            choiceStateDic.Add(EState.Status, new EState[] { });
 
 
             // 인벤토리는 유동적인데 . . . 
@@ -83,7 +88,8 @@ namespace TextRPG
                     break;
 
                 case EState.Status:
-                    
+                    scene.ShowSelectList(choiceStringDic[EState.Status]); // ShowSelecteList - playerInventory
+                    scene.ShowStatus(player);
                     break;
             }
         }

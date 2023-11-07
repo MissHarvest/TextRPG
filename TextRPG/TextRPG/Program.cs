@@ -1,46 +1,29 @@
-﻿namespace TextRPG
+﻿using System.Xml.Linq;
+
+namespace TextRPG
 {
     internal class Program
     {
+        public delegate void KeyInputHandler(ConsoleKey key);
+
         static void Main(string[] args)
         {
-            while(true)
+            // GameManager
+            
+            GameScene scene = new GameScene();
+            KeyInputHandler keyInputHandle = scene.GetInput;
+
+            scene.DrawScene();
+
+            while (true)
             {
-                for (int i = 1; i < 50; ++i)
+                if (Console.KeyAvailable)
                 {
-                    Console.SetCursorPosition(i, 0);
-                    Console.Write("\u2501");
+                    var key = Console.ReadKey(true).Key;
+                    keyInputHandle(key);
                 }
 
-                for (int i = 1; i < 49; ++i)
-                {
-                    Console.SetCursorPosition(i, 25);
-                    Console.Write("\u2501");
-                }
 
-                for(int i = 1; i < 25; ++i)
-                {
-                    Console.SetCursorPosition(0, i);
-                    Console.Write("\u2503");
-                }
-
-                for (int i = 1; i < 25; ++i)
-                {
-                    Console.SetCursorPosition(50, i);
-                    Console.Write("\u2503");
-                }
-
-                Console.SetCursorPosition(0, 0);
-                Console.Write("\u250F");
-
-                Console.SetCursorPosition(50, 0);
-                Console.Write("\u2513");
-
-                Console.SetCursorPosition(0, 25);
-                Console.Write("\u2517");
-
-                Console.SetCursorPosition(50, 25);
-                Console.Write("\u251B");
 
                 Thread.Sleep(100);
             }

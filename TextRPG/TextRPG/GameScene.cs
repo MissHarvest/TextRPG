@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -75,6 +78,9 @@ namespace TextRPG
         Point mapName;
         List<Point> choices = new List<Point>();
         Point exit;
+
+        bool bSplit = false;
+
         public GameScene()
         {
             curScene = EScene.Title;
@@ -84,12 +90,12 @@ namespace TextRPG
             CreateTitle();
             CreateComment();
             mapName = new Point(1, 1, "[마을]");
-            choices.Add(new Point(5, 17, ""));
-            choices.Add(new Point(5, 18, ""));
-            choices.Add(new Point(5, 19, ""));
-            choices.Add(new Point(5, 20, ""));
+            choices.Add(new Point(3, 17, ""));
+            choices.Add(new Point(3, 18, ""));
+            choices.Add(new Point(3, 19, ""));
+            choices.Add(new Point(3, 20, ""));
 
-            exit = new Point(5, 23, "0. 뒤로가기 / 나가기");
+            exit = new Point(3, 23, "0. 뒤로가기 / 나가기");
         }
 
         void CreateFrame()
@@ -125,9 +131,63 @@ namespace TextRPG
             boundary.Add(new Point(50, 15, "\u252B"));
         }
 
+        void ResetColor()
+        {
+            Console.ForegroundColor = ConsoleColor.Black;
+        }
+
         void CreateTitle()
         {
             title = new Point(10, 10, "Text RPG");
+        }
+
+        public void DrawMap(string mapName)
+        {
+            ClearTopBoundary();
+            
+            // 커서 위치 설정
+            Console.SetCursorPosition(2, 1);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write($"[{mapName}]");
+            ResetColor();
+        }
+
+        /// <summary>
+        ///  Draw Top Boundary.
+        /// </summary>
+        /// <param name="mapName">
+        ///     Show in Top Left with [] </param>
+        /// <param name="content">
+        ///     Top boundary is filled with content </param>
+        /// <param name="cursorX">
+        ///     Set Cursor's x position to print </param>
+        /// <param name="space">
+        ///     is True, Add Line between string </param>
+        public void DrawMap(string mapName, string[] content, int cursorX = 1, bool space = false)
+        {
+            ClearTopBoundary();
+            int y = 1;
+            // 커서 위치 설정
+            Console.SetCursorPosition(2, y++);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write($"[{mapName}]");
+            ResetColor();
+
+            //            
+            for (int i = 0; i < content.Length; ++i)
+            {
+                if (space) y++;
+                Console.SetCursorPosition(cursorX, y++);
+                Console.Write(content[i]);                
+            }
+        }
+
+
+        public void Split()
+        {
+            Console.Clear();
+            DrawFrame();
+            DrawBoundary();
         }
 
         void CreateComment()
@@ -149,62 +209,12 @@ namespace TextRPG
             {
                 boundary[i].Draw();
             }
-        }
-
-        void EraseBoundary()
-        {
-            for (int i = 0; i < boundary.Count; ++i)
-            {
-                boundary[i].Clear();
-            }
-        }
-
-        void PrintTitle()
-        {
-            title.Draw();
-            comment.Draw();
-        }
-
-
-        public void DrawScene()
-        {
-            switch (curScene)
-            {
-                case EScene.Title:                    
-                    PrintTitle();
-                    DrawFrame();
-                    break;
-
-                case EScene.Main:
-                    mapName.Draw();
-                    DrawBoundary();
-                    break;
-            }
-        }
-
-        public void LoadScene(EScene scene)
-        {
-            switch (curScene)
-            {
-                case EScene.Title:
-                    title.Clear();
-                    comment.Clear();
-                    break;
-
-                case EScene.Main:
-                    mapName.Clear();
-                    EraseBoundary();
-                    DrawFrame();
-                    DeleteSelectList();
-                    break;
-            }
-            curScene = scene;
-            DrawScene();
+            bSplit = true;
         }
 
         public void ShowSelectList(string[] selectList)
         {
-            DeleteSelectList();
+            ClearBottomBoundary();
 
             for (int i = 0; i < selectList.Length; ++i)
             {
@@ -214,50 +224,36 @@ namespace TextRPG
             exit.Draw();
         }
 
-        void DeleteSelectList()
+        void ClearTopBoundary()
         {
-            for (int i = 0; i < choices.Count; ++i)
+            for(int i = 1; i < 50; ++i)
             {
-                choices[i].Delete();
-            }
-
-            exit.Clear();
-        }
-
-        public void GetInput(ConsoleKey key)
-        {
-            switch (key)
-            {
-                case ConsoleKey.Enter:
-                    LoadScene(GameScene.EScene.Main);
-                    break;
+                for(int j = 1; j < 14; ++j)
+                {
+                    Console.SetCursorPosition(i, j);
+                    Console.Write(" ");
+                }
             }
         }
 
-        public void ShowStatus(Player player)
+        void ClearBottomBoundary()
         {
-            mapName.Delete();
-            mapName.Draw("[능력치]");
+            for(int i = 1; i < 50; ++i)
+            {
+                for(int j = 16; j < 25; ++j)
+                {
+                    Console.SetCursorPosition(i, j);
+                    Console.Write(" ");
+                }                
+            }
+        }
 
-            Console.SetCursorPosition(5, 3);
-            Console.Write("Lv. " + player.Lv);
-
-            Console.SetCursorPosition(5, 5);
-            Console.Write($"Chad ( {player.Class} )");
-
-            Console.SetCursorPosition(5, 7);
-            Console.Write($"공격력 : {player.Atk}");
-
-            Console.SetCursorPosition(5, 9);
-            Console.Write($"방어력 : {player.Def}");
-
-            Console.SetCursorPosition(5, 11);
-            Console.Write($"체력 : {player.Hp} / {player.MaxHp}");
-
-            Console.SetCursorPosition(5, 13);
-            Console.Write($"Gold : {player.Gold}");
-
-            exit.Draw();
-        }        
+        public void DrawTitleScene(/* */)
+        {
+            Console.Clear();
+            DrawFrame();
+            title.Draw();
+            comment.Draw();
+        }
     }
 }

@@ -9,17 +9,16 @@ namespace TextRPG
         static void Main(string[] args)
         {
             Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Black;
-            GameManager gameManager = new GameManager();
-            GameScene scene = new GameScene();
-            //Player player = new Player();
+            Console.ForegroundColor = ConsoleColor.Black;      
 
-            gameManager.Scene = scene;
+            Console.Clear();
+            Screen.SetSize(80, 40);
+            
 
-            KeyInputHandler keyInputHandle = gameManager.GetInput;
-            gameManager.RunGame();
+            KeyInputHandler keyInputHandle = GameManager.Instance.GetInput;
+            GameManager.Instance.RunGame();
 
-            while (gameManager.isPlay)
+            while (GameManager.Instance.isPlay)
             {
                 if (Console.KeyAvailable)
                 {

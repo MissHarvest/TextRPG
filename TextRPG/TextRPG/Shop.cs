@@ -13,9 +13,9 @@ namespace TextRPG
 
         public Shop()
         {
-            _items.Add(new Item("목검", "1:3", "나무로 만들어진 검이다.", 10));
-            _items.Add(new Item("나무 투구", "2:1", "나무로 만들어진 투구이다.", 5));
-            _items.Add(new Item("목장갑", "0:10", "흔하게 생긴 장갑이다.", 3));
+            _items.Add(new Item("목검", "1:3", "나무로 만들어진 검이다.", Item.EType.Weapon, 10));
+            _items.Add(new Item("나무 투구", "2:1", "나무로 만들어진 투구이다.", Item.EType.Armor, 5));
+            _items.Add(new Item("검", "1:5", "흔한 검이다.", Item.EType.Weapon, 3));
         }
     }
 }
